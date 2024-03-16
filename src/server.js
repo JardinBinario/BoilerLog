@@ -1,4 +1,6 @@
 const express = require('express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 const methodOverride = require('method-override');
 const cors = require('cors');
@@ -13,15 +15,52 @@ require('dotenv').config();
 class BoilerLogServer {
     constructor() {
         this.app = express();
-        this.port =  process.env.PORT || 3000;
+        this.port = process.env.PORT || 3000;
 
-        this.middlewares();
-        this.routes();
-        this.database();
-        this.serve();
+        this.loadMiddlewares();
+        this.loadRoutes();
+        this.loadDocs();
+        this.loadDb();
     }
 
-    middlewares() {
+    loadDocs() {
+        const options = {
+            definition: {
+                openapi: '3.1.0',
+                info: {
+                    title: "JardinBinario's BoilerLog Express API with Swagger",
+                    version: '0.1.0',
+                    description:
+                        'This is a simple CRUD API application made with Express and documented with Swagger.',
+                    license: {
+                        name: 'MIT',
+                        url: 'https://spdx.org/licenses/MIT.html',
+                    },
+                    contact: {
+                        name: 'Jardin Binario',
+                        url: 'https://www.jardinbinario.com',
+                        email: 'marceliux@jardinbinario.com',
+                    },
+                },
+                servers: [
+                    {
+                        url: 'http://localhost:3000',
+                    },
+                ],
+            },
+            apis: [path.join(__dirname, 'routes', '*.yaml')],
+        };
+
+        const specs = swaggerJsdoc(options);
+
+        this.app.use(
+            '/docs',
+            swaggerUi.serve,
+            swaggerUi.setup(specs)
+        );
+    }
+
+    loadMiddlewares() {
         this.app.use(etiquetarPeticion);
         this.app.use(httpLogger);
 
@@ -36,29 +75,16 @@ class BoilerLogServer {
         }));
     }
 
-    routes() {
+    loadRoutes() {
         this.app.use(MainMap);
     }
 
     listen() {
-        this.app.listen(this.port, ()=> console.log(`Escuchando peticiones en http://localhost:${this.port}`));
+        this.app.listen(this.port, () => console.log(`Escuchando peticiones en http://localhost:${this.port}`));
     }
 
-    async database() {
+    async loadDb() {
         await dbConnection();
-    }
-
-    serve() {
-        this.app.use(
-            '/', 
-            express.static(path.join(__dirname, './public'), 
-                {
-                    extensions: ['html']
-                }   
-            )
-        );
-
-        this.app.use(express.static(path.join(__dirname, './client/build')));
     }
 }
 

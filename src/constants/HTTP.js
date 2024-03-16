@@ -12,7 +12,8 @@ const respuestasValidas = {
     USUARIO_CREADO: {
         code: HTTPEnum.CREATED,
         ok: true,
-        msg: 'El usuario fue creado correctamente'
+        msg: 'El usuario fue creado correctamente',
+        notify: true,
     },
     ERROR_INTERNO: {
         code: HTTPEnum.INTERNAL_SERVER_ERROR,

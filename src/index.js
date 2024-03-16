@@ -1,3 +1,4 @@
+const path = require('path');
 const BoilerLogServer = require('./server');
 require('./database/database');
 require('dotenv').config();

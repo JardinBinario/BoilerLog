@@ -44,6 +44,7 @@ const httpLogger = () => {
 
     const logger = createLogger({
         format: format.combine(
+            // TODO microservice name
             format.label({ label: 'HTTPLogger' }),
             format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
             format.metadata({ fillExcept: ['message', 'level', 'timestamp', 'label'] })

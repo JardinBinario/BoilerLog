@@ -5,19 +5,9 @@ const { construirRespuesta } = require('../helpers/construirRespuesta');
 const { respuestasValidas } = require('../constants/HTTP');
 const { obtenerLoggableBody } = require('../helpers/logger');
 
-
-// TODO BL-13-JSDocsSpike, do we want to document our code like this?
-/**
- * This method does...
- *
- * @method
- * @name MessageQueueConnector#connectAndSubscribe
- * @param {string} whatever Whatever this is.
- * @returns {Object} Description of return value.
- * @throws {SomeException} blah.
- */
 const crearUsuario = async (req, res = response) => {
     let respuesta;
+    //TODO add logger between steps to keep good track of things
     const { user, name, lastName, email, pwd, admin } = req.body;
 
     const rol = admin ? 'ADMIN_ROLE' : 'USER_ROLE';

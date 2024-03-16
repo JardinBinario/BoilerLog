@@ -1,0 +1,147 @@
+openapi: "3.0.0"
+info:
+  title: Simple API overview
+  version: 2.0.0
+paths:
+  /new:
+    post:
+      tags:
+        - Autorizacion
+      operationId: crearUsuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user
+                - lastName
+                - name
+                - email
+                - pwd
+                - rol
+              properties:
+                user:
+                  type: string
+                  example: johnDoe97
+                name:
+                  type: string
+                  example: John
+                lastName:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  example: john@doe.com
+                pwd:
+                  type: string
+                  example: johnisgreat97!.
+                rol:
+                  enum: ['ADMIN', 'CLIENT', 'SALES_REP']
+                  type: string
+                  example: ADMIN
+                
+      summary: Endpoint para registrar empleados al sistema o clientes, difieren solamente en roles
+      responses:
+        '201':
+          description: |-
+            El usuario fue creado correctamente
+          content:
+            application/json:
+              examples: 
+                foo:
+                  value:
+                    {
+                      "versions": [
+                        {
+                            "status": "CURRENT",
+                            "updated": "2011-01-21T11:33:21Z",
+                            "id": "v2.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v2/",
+                                    "rel": "self"
+                                }
+                            ]
+                        },
+                        {
+                            "status": "EXPERIMENTAL",
+                            "updated": "2013-07-23T11:33:21Z",
+                            "id": "v3.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v3/",
+                                    "rel": "self"
+                                }
+                            ]
+                        }
+                      ]
+                    }
+        '409':
+          description: |-
+            409 response
+          content:
+            application/json: 
+              examples: 
+                foo:
+                  value:
+                   {
+                    "versions": [
+                          {
+                            "status": "CURRENT",
+                            "updated": "2011-01-21T11:33:21Z",
+                            "id": "v2.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v2/",
+                                    "rel": "self"
+                                }
+                            ]
+                        },
+                        {
+                            "status": "EXPERIMENTAL",
+                            "updated": "2013-07-23T11:33:21Z",
+                            "id": "v3.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v3/",
+                                    "rel": "self"
+                                }
+                            ]
+                        }
+                    ]
+                   }
+        '500':
+          description: |-
+            500 response
+          content:
+            application/json: 
+              examples: 
+                foo:
+                  value:
+                   {
+                    "versions": [
+                          {
+                            "status": "CURRENT",
+                            "updated": "2011-01-21T11:33:21Z",
+                            "id": "v2.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v2/",
+                                    "rel": "self"
+                                }
+                            ]
+                        },
+                        {
+                            "status": "EXPERIMENTAL",
+                            "updated": "2013-07-23T11:33:21Z",
+                            "id": "v3.0",
+                            "links": [
+                                {
+                                    "href": "http://127.0.0.1:8774/v3/",
+                                    "rel": "self"
+                                }
+                            ]
+                        }
+                    ]
+                   }
