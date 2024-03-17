@@ -1,18 +1,13 @@
 const express = require('express');
 const { crearUsuario, loginUsuario, revalidarToken } = require('../controllers/auth.controller');
-const { validarJWT } = require('../middlewares/middlewares');
+const { validarJWT, checkRole } = require('../middlewares/middlewares');
 const { validators } = require('../constants/express-validators');
 
 const { authValidators } = validators;
 const authRouter = express.Router();
 
-// Endpoint de registro
-authRouter.post('/new', authValidators['/new'], crearUsuario);
-
-// Endpoint de autenticación
-authRouter.post('/login', authValidators['/login'], loginUsuario);
-
-// Endpoint de validación
-authRouter.get('/renew', validarJWT, revalidarToken);
+authRouter.post('/auth/create_user', authValidators['/new'], validarJWT, checkRole, crearUsuario);
+authRouter.post('/auth/login', authValidators['/login'], loginUsuario);
+authRouter.get('/auth/renew', validarJWT, revalidarToken);
 
 module.exports = authRouter;

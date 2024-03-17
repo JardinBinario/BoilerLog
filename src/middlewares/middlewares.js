@@ -2,16 +2,16 @@ const { validationResult } = require('express-validator');
 const { response } = require('express');
 const jwt = require('jsonwebtoken');
 const { v4 } = require('uuid');
-require('dotenv').config();
+const {config} = require('../config');
 
 const checkRole = (req, res = response, next) => {
-    const token = req.header('Authorization');
+    const [,token] = req.header('Authorization').split(' ');
 
-    const { rol } = jwt.verify(token, process.env.API_SEED);
+    const { rol } = jwt.verify(token, config.privateKey);
 
     //TODO we can add multi-role validation in here in case of needed for admin endpoints like user update, or for support roles.
 
-    rol !== 'ADMIN_ROLE'
+    rol !== 'ADMIN'
         ? res.status(401).json({ ok: false, err: 'No estas autorizado.' })
         : next();
 
@@ -39,13 +39,12 @@ const erroresEnPeticion = (req, res = response, next) => {
 const etiquetarPeticion = (req, res = response, next) => {
     const requestId = v4();
     res.setHeader('X-Request-Id', requestId);
-    // const token = req.header('Authorization');
-    // const resolvedData = jwt.verify(token, process.env.API_SEED);
     next();
 }
 
 const validarJWT = (req, res = response, next) => {
-    const token = req.header('Authorization');
+    const [,token] = req.header('Authorization').split(' ');
+
 
     if (!token) {
         return res.status(401).json({
@@ -55,7 +54,7 @@ const validarJWT = (req, res = response, next) => {
     }
 
     try {
-        const { uid, name, rol } = jwt.verify(token, process.env.API_SEED);
+        const { uid, name, rol } = jwt.verify(token, config.privateKey);
         req.uid = uid;
         req.name = name;
         req.rol = rol;

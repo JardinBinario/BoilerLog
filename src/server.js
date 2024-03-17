@@ -9,13 +9,12 @@ const MainMap = require('./routes/mainMap.routes');
 const { dbConnection } = require('./database/database');
 const { etiquetarPeticion } = require('./middlewares/middlewares');
 const { httpLogger } = require('./helpers/logger');
-
-require('dotenv').config();
+const { config } = require('./config');
 
 class BoilerLogServer {
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.port = config.port;
 
         this.loadMiddlewares();
         this.loadRoutes();
@@ -24,32 +23,10 @@ class BoilerLogServer {
     }
 
     loadDocs() {
-        const options = {
-            definition: {
-                openapi: '3.1.0',
-                info: {
-                    title: "JardinBinario's BoilerLog Express API with Swagger",
-                    version: '0.1.0',
-                    description:
-                        'This is a simple CRUD API application made with Express and documented with Swagger.',
-                    license: {
-                        name: 'MIT',
-                        url: 'https://spdx.org/licenses/MIT.html',
-                    },
-                    contact: {
-                        name: 'Jardin Binario',
-                        url: 'https://www.jardinbinario.com',
-                        email: 'marceliux@jardinbinario.com',
-                    },
-                },
-                servers: [
-                    {
-                        url: 'http://localhost:3000',
-                    },
-                ],
-            },
-            apis: [path.join(__dirname, 'routes', '*.yaml')],
-        };
+        const options = JSON.parse(config.oapiDefinition);
+
+        // change this to wherever you have your yaml files or pass other paths in the array
+        options.apis = [path.join(__dirname, 'routes', '*.yaml')]
 
         const specs = swaggerJsdoc(options);
 

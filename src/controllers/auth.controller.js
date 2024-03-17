@@ -8,9 +8,7 @@ const { obtenerLoggableBody } = require('../helpers/logger');
 const crearUsuario = async (req, res = response) => {
     let respuesta;
     //TODO add logger between steps to keep good track of things
-    const { user, name, lastName, email, pwd, admin } = req.body;
-
-    const rol = admin ? 'ADMIN_ROLE' : 'USER_ROLE';
+    const { user, name, lastName, email, pwd, rol } = req.body;
 
     try {
         const nuevoUsuario = new User({
@@ -48,7 +46,7 @@ const loginUsuario = async (req, res = response) => {
 
         if (!usuario) return construirRespuesta(respuestasValidas.USUARIO_DESCONOCIDO, res, loggablePayload, user);
         
-        if (!usuario.estado) return construirRespuesta(respuestasValidas.USUARIO_DESACTIVADO, res, loggablePayload);
+        if (!usuario.activo) return construirRespuesta(respuestasValidas.USUARIO_DESACTIVADO, res, loggablePayload);
         
         if (!usuario.compararPassword(pwd)) return construirRespuesta(respuestasValidas.NO_AUTORIZADO, res, loggablePayload);
         

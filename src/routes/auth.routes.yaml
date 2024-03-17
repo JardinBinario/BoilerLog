@@ -3,8 +3,10 @@ info:
   title: Simple API overview
   version: 2.0.0
 paths:
-  /new:
+  /auth/create_user:
     post:
+      security:
+        - bearerAuth: []
       tags:
         - Autorizacion
       operationId: crearUsuario
@@ -49,99 +51,129 @@ paths:
           content:
             application/json:
               examples: 
-                foo:
+                Success:
                   value:
                     {
-                      "versions": [
-                        {
-                            "status": "CURRENT",
-                            "updated": "2011-01-21T11:33:21Z",
-                            "id": "v2.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v2/",
-                                    "rel": "self"
-                                }
-                            ]
-                        },
-                        {
-                            "status": "EXPERIMENTAL",
-                            "updated": "2013-07-23T11:33:21Z",
-                            "id": "v3.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v3/",
-                                    "rel": "self"
-                                }
-                            ]
-                        }
-                      ]
+                      "ok": true,
+                      "requestId": "12345",
+                      "msg": "El usuario fue creado correctamente"
                     }
         '409':
           description: |-
-            409 response
+            Ya existe un usuario que comparte datos unicos en la base de datos
           content:
             application/json: 
               examples: 
-                foo:
+                Duplicate User:
                   value:
-                   {
-                    "versions": [
-                          {
-                            "status": "CURRENT",
-                            "updated": "2011-01-21T11:33:21Z",
-                            "id": "v2.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v2/",
-                                    "rel": "self"
-                                }
-                            ]
-                        },
-                        {
-                            "status": "EXPERIMENTAL",
-                            "updated": "2013-07-23T11:33:21Z",
-                            "id": "v3.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v3/",
-                                    "rel": "self"
-                                }
-                            ]
-                        }
-                    ]
-                   }
+                    {
+                      "ok": false,
+                      "requestId": "12345",
+                      "msg": "Este usuario ya existe en nuestra base de datos!"
+                    }
         '500':
           description: |-
-            500 response
+            Error interno de servidor
           content:
             application/json: 
               examples: 
-                foo:
+                Internal Server Error:
                   value:
-                   {
-                    "versions": [
-                          {
-                            "status": "CURRENT",
-                            "updated": "2011-01-21T11:33:21Z",
-                            "id": "v2.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v2/",
-                                    "rel": "self"
-                                }
-                            ]
-                        },
-                        {
-                            "status": "EXPERIMENTAL",
-                            "updated": "2013-07-23T11:33:21Z",
-                            "id": "v3.0",
-                            "links": [
-                                {
-                                    "href": "http://127.0.0.1:8774/v3/",
-                                    "rel": "self"
-                                }
-                            ]
-                        }
-                    ]
-                   }
+                    {
+                      "ok": false,
+                      "requestId": "12345",
+                      "msg": "Error interno de servidor!"
+                    }
+  /auth/login:
+    post:
+      tags:
+        - Autorizacion
+      operationId: loginUsuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user
+                - pwd
+              properties:
+                user:
+                  type: string
+                  example: johnDoe97
+                pwd:
+                  type: string
+                  example: johnisgreat97!.  
+      summary: Endpoint para autenticar usuarios
+      responses:
+        '200':
+          description: |-
+            El inicio de sesion fue exitoso
+          content:
+            application/json:
+              examples: 
+                Success:
+                  value:
+                    {
+                      "ok": true,
+                      "requestId": "12345",
+                      "payload": {
+                        "uid": "6789",
+                        "user": "johnDoe97",
+                        "token": "token",
+                        "rol": "ADMIN"
+                      }
+                    }
+        '500':
+          description: |-
+            Error interno de servidor
+          content:
+            application/json: 
+              examples: 
+                Internal Server Error:
+                  value:
+                    {
+                      "ok": false,
+                      "requestId": "12345",
+                      "msg": "Error interno de servidor!"
+                    }
+  /auth/renew:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Autorizacion
+      operationId: revalidarToken
+      summary: Endpoint para renovar el token de autenticacion
+      responses:
+        '200':
+          description: |-
+            La renovacion de sesion fue exitosa
+          content:
+            application/json:
+              examples: 
+                Success:
+                  value:
+                    {
+                      "ok": true,
+                      "requestId": "12345",
+                      "payload": {
+                        "uid": "6789",
+                        "user": "johnDoe97",
+                        "token": "token",
+                        "rol": "ADMIN"
+                      }
+                    }
+        '500':
+          description: |-
+            Error interno de servidor
+          content:
+            application/json: 
+              examples: 
+                Internal Server Error:
+                  value:
+                    {
+                      "ok": false,
+                      "requestId": "12345",
+                      "msg": "Error interno de servidor!"
+                    }   

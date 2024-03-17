@@ -1,17 +1,17 @@
 const S3 = require ('aws-sdk/clients/s3');
-require('dotenv').config();
 const fs = require('fs');
+const {config} = require('../config');
 
 const s3service = new S3({
-    region: process.env.AWS_REGION,
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY
+    region: config.awsRegion,
+    accessKeyId: config.awsAccessKey,
+    secretAccessKey: config.awsSecretKey,
 });
 
 const uploadFile = (filePath, fileName, id, mimeType) => {
     const fileStream = fs.readFileSync(filePath);
     const uploadParams = {
-        Bucket: process.env.AWS_BUCKET,
+        Bucket: config.awsBucket,
         Body: fileStream,
         Key: `${id}/${fileName}`,
         ContentType: mimeType
@@ -21,13 +21,13 @@ const uploadFile = (filePath, fileName, id, mimeType) => {
 
 const getFile = (id, fileName) => 
     s3service.getObject({
-        Bucket: process.env.AWS_BUCKET,
+        Bucket: config.awsBucket,
         Key: `${id}/${fileName}`
     }).createReadStream();
 
 const deleteFile = (id, fileName) => 
     s3service.deleteObject({
-        Bucket: process.env.AWS_BUCKET,
+        Bucket: config.awsBucket,
         Key: `${id}/${fileName}`
     }).promise();
 

@@ -1,6 +1,7 @@
 const { createLogger, transports, format } = require('winston');
 const morgan = require('morgan');
 const SlackHook = require("winston-slack-webhook-transport");
+const { config } = require('../config');
 
 require('winston-mongodb');
 
@@ -24,7 +25,7 @@ const logger = (requestId) => createLogger({
             format: format.combine(
                 format.json(),
             ),
-            db: process.env.MONGODB_URI,
+            db: config.dbHost,
             options: {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,

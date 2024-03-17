@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const bcrypt = require ('bcrypt');
+const bcrypt = require('bcrypt');
 
 const rolesValidos = {
-    values: ['USER_ROLE', 'ADMIN_ROLE'],
+    values: ['ADMIN', 'CLIENT', 'SALES_REP'],
     message: '{VALUE} no es un rol valido'
 };
 
@@ -22,34 +22,36 @@ const rolesValidos = {
  */
 
 const Usuario = new Schema({
-    user:{
+    user: {
         type: String,
-        index: {unique: true},
+        index: { unique: true },
         required: [true, 'El usuario es necesario'],
     },
-    nombre:{
+    nombre: {
         type: String,
         required: [true, 'El nombre es necesario'],
         maxlength: 15
     },
-    apellido:{
+    apellido: {
         type: String,
         required: [true, 'El apellido es necesario'],
         maxlength: 15
     },
-    pass:{
+    pass: {
         type: String,
         required: [true, 'El password es necesario'],
     },
-    email:{
+    email: {
         type: String,
-        required: [true, 'El correo electrónico es necesario']
+        required: [true, 'El correo electrónico es necesario'],
+        index: { unique: true }
+
     },
-    estado:{
+    activo: {
         type: Boolean,
         default: true
     },
-    rol:{
+    rol: {
         type: String,
         default: 'USER_ROLE',
         enum: rolesValidos
@@ -58,9 +60,9 @@ const Usuario = new Schema({
 
 Usuario.methods.encriptarPassword = (password) => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 
-Usuario.methods.compararPassword = function (password){
+Usuario.methods.compararPassword = function (password) {
     return bcrypt.compareSync(password, this.pass)
-}; 
+};
 
 Usuario.index({
     'user': 'text',
